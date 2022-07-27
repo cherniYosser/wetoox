@@ -20,4 +20,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::group(['namespace' => 'Api\V1', 'prefix' => 'v1'], function () {
     Route::get('tooxs', 'TooxController@index')->name('toox.index');
+    Route::post('createToox', 'TooxController@store')->name('toox.store');
 });
