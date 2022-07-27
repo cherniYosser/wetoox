@@ -18,7 +18,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::group(['namespace' => 'Api\V1', 'prefix' => 'v1'], function () {
-    Route::get('tooxs', 'TooxController@index')->name('toox.index');
-    Route::post('createToox', 'TooxController@store')->name('toox.store');
-});
+Route::resource('tooxs', App\Http\Controllers\API\TooxController::class);

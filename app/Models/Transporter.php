@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -8,7 +8,7 @@ class Transporter extends Model
 {
     public $timestamps = false;
     protected $guarded = ['id'];
-    
+
     public function user()
     {
         return $this->belongsTo('App\User');
@@ -23,5 +23,5 @@ class Transporter extends Model
     {
         return $this->belongsToMany('App\Toox');
     }
-    
+
 }

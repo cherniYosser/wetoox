@@ -1,17 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\Toox;
+namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\UploadsController;
-use App\Picker;
-use App\Receiver;
-use App\Toox;
-use App\Transporter;
-use App\Sender;
-use Auth;
-use Symfony\Component\HttpFoundation\Session\Session;
+use App\Models\Picker;
+use App\Models\Receiver;
+use App\Models\Toox;
+use App\Models\Transporter;
+use App\Models\Sender;
+
 
 
 
@@ -45,17 +43,9 @@ class TooxController extends Controller
 
         return response()->json([
             'tooxs' => $tooxs
-        ])->setCallback($request->input('callback'));
+        ]);
 
     }
-
-
-    public function create()
-    {
-
-        return view('toox.toox');
-    }
-
 
     public function store(Request $request)
     {
@@ -226,20 +216,20 @@ class TooxController extends Controller
 
 
 
-
+/*
         if ($request->hasFile('toox_picture')) {
 
             $toox->picture =  UploadsController::upload('toox_picture', '', '/uploads/toox/', '295', '280');
         }
-
+*/
         $picker->save();
         $receiver->save();
         $toox->picker_id = $picker->id;
         $toox->receiver_id = $receiver->id;
         $toox->state = "Waiting for transporter";
 
-
-
+        $toox->status = false;
+/*
         if ( Auth::user()== true && Auth::user()->sender == null ) {
 
             $sender = new Sender();
@@ -253,12 +243,14 @@ class TooxController extends Controller
         elseif( Auth::user()== true ){
             $toox->sender_id = Auth::user()->sender->id;
         }
+
         else{
             $toox->status = false;
         }
-
+*/
         $toox->save();
 
+        /*
         if(Auth::user()== null){
 
             $idtoox= $toox->id;
@@ -269,10 +261,10 @@ class TooxController extends Controller
                 'status'=>200
             ])->setCallback($request->input('callback'));
         }
-
+*/
         return response()->json([
             'status'=>200
-        ])->setCallback($request->input('callback'));
+        ]);
 
 
     }
@@ -326,13 +318,10 @@ class TooxController extends Controller
 
     public function show($id)
     {
-
         $toox = Toox::find($id);
         return response()->json([
             'toox'=>$toox
-        ])->setCallback($request->input('callback'));
-
-
+        ]);
     }
 
     public function mytoox($id)
@@ -340,7 +329,7 @@ class TooxController extends Controller
         $tooxs = Toox::where('sender_id', $id)->where('status',1)->get();
         return response()->json([
             'tooxs'=>$tooxs
-        ])->setCallback($request->input('callback'));
+        ]);
     }
 
     public function toox_transporter($id)
@@ -348,7 +337,7 @@ class TooxController extends Controller
         $tooxs = Toox::where('transporter_id', $id)->where('status',1)->get();
         return response()->json([
             'tooxs'=>$tooxs
-        ])->setCallback($request->input('callback'));
+        ]);
     }
 
     public function mytooxdetails($id)
@@ -364,17 +353,16 @@ class TooxController extends Controller
             return  response()->json([
                 'toox'=>$toox,
                 'transporter'=>$transporter
-            ])->setCallback($request->input('callback'));
+            ]);
         }
 
     }
     public function toox_transporter_details($id)
     {
         $toox = Toox::find($id);
-
-        return   response()->json([
-            'toox'=>$toox        ])->setCallback($request->input('callback'));
-
+        return response()->json([
+            'toox'=>$toox
+        ]);
     }
 
 

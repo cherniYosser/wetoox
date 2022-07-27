@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -162,10 +162,10 @@ class AdminController extends Controller
     }
 
     public function claimmail($id){
-        
+
         $claim=Claim::find($id);
         return view('admin.claimmail', compact('claim'));
-        
+
     }
 
 
@@ -180,6 +180,6 @@ class AdminController extends Controller
         return redirect()->route('adminclaims');
     }
 
-    
+
 
 }

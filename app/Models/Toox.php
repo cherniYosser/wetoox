@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 
 use Illuminate\Database\Eloquent\Model;
@@ -9,13 +9,13 @@ class Toox extends Model
 {
 
 
-  
-    
+
+
     public $timestamps = false;
     protected $guarded = ['id'];
     protected $appends = ['img'];
-    
-    
+
+
 
     public function picker()
     {
@@ -27,7 +27,7 @@ class Toox extends Model
         return $this->belongsTo('App\Receiver');
     }
 
-   
+
 
     public function transporter()
     {
@@ -43,7 +43,7 @@ class Toox extends Model
     {
         return $this->belongsTo('App\Sender');
     }
-    
 
-    
+
+
 }
