@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TooxController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -21,7 +23,7 @@ Route::post('/signup', 'RegisterController@signUp');
 Route::post('/signin', 'RegisterController@signIn');
 
 // Route::group(['middleware' => 'jwt.auth'], function() {
-    Route::get('/toox', 'TooxController@index');
+    Route::get('/toox', [TooxController::class, 'index']);
 //});
 
 
