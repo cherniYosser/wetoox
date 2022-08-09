@@ -23,7 +23,7 @@ Route::post('/signup', 'RegisterController@signUp');
 Route::post('/signin', 'RegisterController@signIn');
 
 // Route::group(['middleware' => 'jwt.auth'], function() {
-    Route::get('/toox', TooxController::class)->name('index');
+    Route::resource('tooxs', TooxController::class);
 //});
 
 
