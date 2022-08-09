@@ -22,8 +22,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/signup', 'RegisterController@signUp');
 Route::post('/signin', 'RegisterController@signIn');
 
-// Route::group(['middleware' => 'jwt.auth'], function() {
+Route::group(['middleware' => 'jwt.auth'], function() {
     Route::resource('tooxs', TooxController::class);
-//});
+});
 
 
