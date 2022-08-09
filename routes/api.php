@@ -17,5 +17,11 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::post('/signup', 'RegisterController@signUp');
+Route::post('/signin', 'RegisterController@signIn');
 
-Route::resource('tooxs', App\Http\Controllers\API\TooxController::class);
+Route::group(['middleware' => 'jwt.auth'], function() {
+    Route::get('/toox', 'TooxController@index');
+});
+
+
