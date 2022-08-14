@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\UploadsController;
+
 use App\Models\Picker;
 use App\Models\Receiver;
 use App\Models\Toox;
@@ -15,10 +19,13 @@ use App\Models\Sender;
 
 class TooxController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
 
     public function index(Request $request)
     {
-
         $tooxs = Toox::where(function ($query) use ($request) {
 
             if (($tooxname = $request->get('search_toox_name'))) {
@@ -42,6 +49,7 @@ class TooxController extends Controller
             ->paginate(4);
 
         return response()->json([
+            'status' => 'success',
             'tooxs' => $tooxs
         ]);
 
@@ -49,158 +57,159 @@ class TooxController extends Controller
 
     public function store(Request $request)
     {
+
         $picker = new Picker();
         $receiver = new Receiver();
         $toox = new Toox();
-
-        // $this->validate($request, [
-        //     'name' => 'required',
-        // ]);
-        // if ($request->size != 'pet') {
-        //     $this->validate($request, [
-        //         'value' => 'required'
-        //     ]);
-        // }
-        // $this->validate($request, [
-        //     'size' => 'required',
-        //     'toox_picture' => 'image|max:2048|required|dimensions:min_height=295,min_width=280',
-        //     'pickup_location' => 'required',
-        // ]);
-        // if ($request->picker == '') {
-        //     $this->validate($request, [
-        //         'picker' => 'required'
-        //     ]);
-        // }
-        // if ($request->picker == '2') {
-        //     $this->validate($request, [
-        //         'picker_name' => 'required',
-        //         'picker_email' => 'required',
-        //         'picker_phone' => 'required',
-        //     ]);
-        // }
-        // if ($request->picker == '3') {
-        //     $this->validate($request, [
-        //         'pickup_from_location' => 'required',
-        //         'pickup_from_location_email' => 'required',
-        //         'pickup_from_location_phone' => 'required'
-        //     ]);
-        // }
-        // $this->validate($request, [
-        //     'delivery_location' => 'required'
-        // ]);
-        // if ($request->receiver == '') {
-        //     $this->validate($request, [
-        //         'receiver' => 'required'
-        //     ]);
-        // }
-        // if ($request->receiver == '5') {
-        //     $this->validate($request, [
-        //         'receiver_name' => 'required',
-        //         'receiver_email' => 'required',
-        //         'receiver_phone' => 'required'
-        //     ]);
-        // }
-        // if ($request->receiver == '6') {
-        //     $this->validate($request, [
-        //         'recive_location' => 'required',
-        //         'recive_location_email' => 'required',
-        //         'recive_location_phone' => 'required'
-        //     ]);
-        // }
-        // if ($request->package_deliver_date == '') {
-        //     $this->validate($request, [
-        //         'package_deliver_date' => 'required'
-        //     ]);
-        // }
-        // if ($request->package_deliver_date == '8') {
-        //     $this->validate($request, [
-        //         'delivery_deadline' => 'required'
-        //     ]);
-        // }
-        // $this->validate($request, [
-        //     'additional_information' => 'required'
-        // ]);
-        // $this->validate($request, [
-        //     'delivery_location' => 'required',
-        //     'additional_information' => 'required'
-        // ]);
-        // if ($request->additional_expenses == '') {
-        //     $this->validate($request, [
-        //         'additional_expenses' => 'required'
-        //     ]);
-        // }
-        // if ($request->additional_expenses == '11') {
-        //     $this->validate($request, [
-        //         'reason' => 'required',
-        //         'extra_compensation' => 'required'
-        //     ]);
-        // }
-
-
-        // if ($request->picker == '1') {
-        //     if(Auth::user() != null){
-        //         $picker->picker_name = Auth::user()->name;
-        //         $picker->picker_email = Auth::user()->email;
-        //         if(Auth::user()->sender != null){
-        //             $picker->picker_phone = Auth::user()->sender->phone;
-        //         }
-        //     }
-        //     else{
-        //         $picker->auth=true;
-        //     }
-        // }
-        // else if ($request->picker == '2') {
-        //     $picker->picker_name = $request->picker_name;
-        //     $picker->picker_email = $request->picker_email;
-        //     $picker->picker_phone = $request->picker_phone;
-
-        // }
-        // else if ($request->picker == '3') {
-        //     $picker->picker_name = $request->pickup_from_location;
-        //     $picker->picker_email = $request->pickup_from_location_email;
-        //     $picker->picker_phone = $request->pickup_from_location_phone;
-
-        // }
-
-        // if ($request->receiver == '4') {
-        //     if(Auth::user() != null) {
-        //         $receiver->receiver_name = Auth::user()->name;
-        //         $receiver->receiver_email = Auth::user()->email;
-        //         if (Auth::user()->sender != null) {
-        //             $receiver->receiver_phone = Auth::user()->sender->phone;
-        //         }
-        //     }
-        //     else{
-        //         $receiver->auth=true;
-        //     }
+//
+//         $this->validate($request, [
+//             'name' => 'required',
+//         ]);
+//         if ($request->size != 'pet') {
+//             $this->validate($request, [
+//                 'value' => 'required'
+//             ]);
+//         }
+//        $this->validate($request, [
+//             'size' => 'required',
+//             'toox_picture' => 'image|max:2048|required|dimensions:min_height=295,min_width=280',
+//             'pickup_location' => 'required',
+//        ]);
+//         if ($request->picker == '') {
+//             $this->validate($request, [
+//                 'picker' => 'required'
+//             ]);
+//         }
+//         if ($request->picker == '2') {
+//            $this->validate($request, [
+//                 'picker_name' => 'required',
+//                 'picker_email' => 'required',
+//                 'picker_phone' => 'required',
+//             ]);
+//         }
+//         if ($request->picker == '3') {
+//             $this->validate($request, [
+//                 'pickup_from_location' => 'required',
+//                 'pickup_from_location_email' => 'required',
+//                 'pickup_from_location_phone' => 'required'
+//             ]);
+//         }
+//         $this->validate($request, [
+//             'delivery_location' => 'required'
+//         ]);
+//         if ($request->receiver == '') {
+//           $this->validate($request, [
+//                 'receiver' => 'required'
+//             ]);
+//         }
+//         if ($request->receiver == '5') {
+//             $this->validate($request, [
+//                 'receiver_name' => 'required',
+//                 'receiver_email' => 'required',
+//                 'receiver_phone' => 'required'
+//             ]);
+//         }
+//         if ($request->receiver == '6') {
+//             $this->validate($request, [
+//                 'recive_location' => 'required',
+//                 'recive_location_email' => 'required',
+//                 'recive_location_phone' => 'required'
+//             ]);
+//         }
+//         if ($request->package_deliver_date == '') {
+//             $this->validate($request, [
+//                 'package_deliver_date' => 'required'
+//             ]);
+//         }
+//        if ($request->package_deliver_date == '8') {
+//             $this->validate($request, [
+//                 'delivery_deadline' => 'required'
+//             ]);
+//         }
+//         $this->validate($request, [
+//             'additional_information' => 'required'
+//         ]);
+//         $this->validate($request, [
+//             'delivery_location' => 'required',
+//             'additional_information' => 'required'
+//         ]);
+//         if ($request->additional_expenses == '') {
+//             $this->validate($request, [
+//                 'additional_expenses' => 'required'
+//             ]);
+//         }
+//         if ($request->additional_expenses == '11') {
+//             $this->validate($request, [
+//                 'reason' => 'required',
+//                 'extra_compensation' => 'required'
+//             ]);
+//         }
 
 
-        // }
-        // else if ($request->receiver == '5') {
-        //     $receiver->receiver_name = $request->receiver_name;
-        //     $receiver->receiver_email = $request->receiver_email;
-        //     $receiver->receiver_phone = $request->receiver_phone;
+         if ($request->picker == '1') {
+             if(Auth::user() != null){
+                 $picker->picker_name = Auth::user()->name;
+                 $picker->picker_email = Auth::user()->email;
+                 if(Auth::user()->sender != null){
+                     $picker->picker_phone = Auth::user()->sender->phone;
+                 }
+             }
+             else{
+                 $picker->auth=true;
+             }
+         }
+         else if ($request->picker == '2') {
+             $picker->picker_name = $request->picker_name;
+             $picker->picker_email = $request->picker_email;
+             $picker->picker_phone = $request->picker_phone;
 
-        // }
-        // else if ($request->receiver == '6') {
-        //     $receiver->receiver_name = $request->recive_location;
-        //     $receiver->receiver_email = $request->recive_location_email;
-        //     $receiver->receiver_phone = $request->recive_location_phone;
+         }
+         else if ($request->picker == '3') {
+             $picker->picker_name = $request->pickup_from_location;
+             $picker->picker_email = $request->pickup_from_location_email;
+             $picker->picker_phone = $request->pickup_from_location_phone;
 
-        // }
+         }
+
+         if ($request->receiver == '4') {
+             if(Auth::user() != null) {
+                 $receiver->receiver_name = Auth::user()->name;
+                 $receiver->receiver_email = Auth::user()->email;
+                 if (Auth::user()->sender != null) {
+                     $receiver->receiver_phone = Auth::user()->sender->phone;
+                 }
+             }
+             else{
+                 $receiver->auth=true;
+             }
+
+
+         }
+         else if ($request->receiver == '5') {
+             $receiver->receiver_name = $request->receiver_name;
+             $receiver->receiver_email = $request->receiver_email;
+             $receiver->receiver_phone = $request->receiver_phone;
+
+         }
+         else if ($request->receiver == '6') {
+             $receiver->receiver_name = $request->recive_location;
+             $receiver->receiver_email = $request->recive_location_email;
+             $receiver->receiver_phone = $request->recive_location_phone;
+
+         }
 
 
         $toox->name = $request->name;
         $toox->value = $request->value;
         $toox->size = $request->size;
-        // = $request->pickup_location;
-        //$toox->delivery_location = $request->delivery_location;
+        $toox->pickup_location =$request->pickup_location;
+        $toox->delivery_location = $request->delivery_location;
         $toox->additional_information = $request->additional_information;
 
 
-        // if ($request->package_deliver_date == '8') {
-        //     $toox->delivery_deadline = $request->delivery_deadline;
-        // }
+         if ($request->package_deliver_date == '8') {
+             $toox->delivery_deadline = $request->delivery_deadline;
+         }
 
 
 
@@ -208,20 +217,20 @@ class TooxController extends Controller
         $toox->price = $request->pricetopay;
 
 
-        // $toox->latpl = $request->lat;
-        // $toox->lngpl = $request->lng;
-        // $toox->latdl = $request->lat2;
-        // $toox->lngdl = $request->lng2;
+         $toox->latpl = $request->lat;
+         $toox->lngpl = $request->lng;
+         $toox->latdl = $request->lat2;
+         $toox->lngdl = $request->lng2;
 
 
 
 
-/*
-        if ($request->hasFile('toox_picture')) {
 
-            $toox->picture =  UploadsController::upload('toox_picture', '', '/uploads/toox/', '295', '280');
-        }
-*/
+//        if ($request->hasFile('toox_picture')) {
+//
+//            $toox->picture =  UploadsController::upload('toox_picture', '', '/uploads/toox/', '295', '280');
+//        }
+
         $picker->save();
         $receiver->save();
         $toox->picker_id = $picker->id;
@@ -229,7 +238,7 @@ class TooxController extends Controller
         $toox->state = "Waiting for transporter";
 
         $toox->status = false;
-/*
+
         if ( Auth::user()== true && Auth::user()->sender == null ) {
 
             $sender = new Sender();
@@ -247,10 +256,10 @@ class TooxController extends Controller
         else{
             $toox->status = false;
         }
-*/
+
         $toox->save();
 
-        /*
+
         if(Auth::user()== null){
 
             $idtoox= $toox->id;
@@ -258,12 +267,12 @@ class TooxController extends Controller
             $session->set('toox',$idtoox);
             $request->session()->flash('alert-tooxsession', 'Please register or login to save your toox');
             return response()->json([
-                'status'=>200
-            ])->setCallback($request->input('callback'));
+                'status'=>'success'
+            ]);
         }
-*/
+
         return response()->json([
-            'status'=>200
+            'status' => 'success'
         ]);
 
 
@@ -320,6 +329,7 @@ class TooxController extends Controller
     {
         $toox = Toox::find($id);
         return response()->json([
+            'status'=>'success',
             'toox'=>$toox
         ]);
     }
@@ -380,7 +390,7 @@ class TooxController extends Controller
         }
 
         return   response()->json([
-            'status'=>200        ])->setCallback($request->input('callback'));
+            'status'=>200        ]);
     }
 
     public function choosetransporter($id, $idtoox)
@@ -393,7 +403,7 @@ class TooxController extends Controller
         $toox->update();
 //redirect()->route('mytoox', Auth::user()->sender->id);
         return response()->json([
-            'mytoox'=>Auth::user()->sender->id        ])->setCallback($request->input('callback'));
+            'mytoox'=>Auth::user()->sender->id        ]);
 
     }
 

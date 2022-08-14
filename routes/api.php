@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\AuthController;
+
 use App\Http\Controllers\Api\TooxController;
 
 
@@ -19,11 +21,19 @@ use App\Http\Controllers\Api\TooxController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::post('/signup', 'RegisterController@signUp');
-Route::post('/signin', 'RegisterController@signIn');
+Route::controller(AuthController::class)->group(function () {
+    Route::post('login', 'login');
+    Route::post('register', 'register');
+    Route::post('logout', 'logout');
+    Route::post('refresh', 'refresh');
 
-Route::group(['middleware' => 'jwt.auth'], function() {
-    Route::resource('tooxs', TooxController::class);
 });
+Route::controller(TooxController::class)->group(function () {
+    Route::get('tooxs', 'index');
+    Route::post('create','store');
+    Route::get('show/{id}','show');
+
+});
+
 
 

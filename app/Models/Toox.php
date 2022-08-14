@@ -8,12 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Toox extends Model
 {
 
-
-
-
     public $timestamps = false;
     protected $guarded = ['id'];
-    protected $appends = ['img'];
+
 
 
 
